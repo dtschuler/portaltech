@@ -17,6 +17,10 @@ import boto3
 # This is (maybe?) needed to display the images.
 #% matplotlib inline
 
+sys.path.append("..")
+ # This is needed since the notebook is stored in the object_detection folder.
+from object_detection.utils import ops as utils_ops
+
 #object detection imports
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
@@ -77,7 +81,6 @@ def runthisshit():
     s3 = boto3.client('s3')
 
     # This is needed since the notebook is stored in the object_detection folder.
-    sys.path.append("..")
     from object_detection.utils import ops as utils_ops
 
     if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
@@ -93,7 +96,7 @@ def runthisshit():
     PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
 
 # List of the strings that is used to add correct label for each box.
-    PATH_TO_LABELS = os.path.join('object_detection/data', 'mscoco_label_map.pbtxt')
+    PATH_TO_LABELS = os.path.join('detect_objects/object_detection/data', 'mscoco_label_map.pbtxt')
 
     opener = urllib.request.URLopener()
     opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
@@ -120,7 +123,7 @@ def runthisshit():
 # image1.jpg
 # image2.jpg
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-    PATH_TO_TEST_IMAGES_DIR = 'object_detection/test_images'
+    PATH_TO_TEST_IMAGES_DIR = 'detect_objects/object_detection/test_images'
     TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
 
 #testing for pulling in images from the S3 put event
