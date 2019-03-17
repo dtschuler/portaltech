@@ -3,4 +3,7 @@ tensorflow
 six
 matplotlib
 Pillow
-boto3
+flask
+flask_restful
+sqlalchemy
+
