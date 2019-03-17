@@ -72,19 +72,8 @@ def run_inference_for_single_image(image, graph):
         output_dict['detection_masks'] = output_dict['detection_masks'][0]
   return output_dict
 
-def run_analysis():
-    #s3 access instance
-    s3 = boto3.client('s3')
-
-    # This is needed since the notebook is stored in the object_detection folder.
-    sys.path.append("..")
-    from object_detection.utils import ops as utils_ops
-
-    if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
-        raise ImportError('Please upgrade your TensorFlow installation to v1.9.* or later!')
-
-
-# What model to download.
+def get_frozen_graph():
+    # What model to download.
     MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
     MODEL_FILE = MODEL_NAME + '.tar.gz'
     DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
@@ -103,7 +92,7 @@ def run_analysis():
         if 'frozen_inference_graph.pb' in file_name:
             tar_file.extract(file, os.getcwd())
 
-#Load frozen detection graph
+    #Load frozen detection graph
     detection_graph = tf.Graph()
     with detection_graph.as_default():
         od_graph_def = tf.GraphDef()
@@ -113,8 +102,17 @@ def run_analysis():
             tf.import_graph_def(od_graph_def, name='')
 
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
+    return detection_graph, category_index
 
+def run_analysis():
+        # This is needed since the notebook is stored in the object_detection folder.
+    sys.path.append("..")
+    from object_detection.utils import ops as utils_ops
 
+    if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
+        raise ImportError('Please upgrade your TensorFlow installation to v1.9.* or later!')
+
+    detection_graph, category_index = get_frozen_graph()
 
 # For the sake of simplicity we will use only 2 images:
 # image1.jpg
@@ -122,17 +120,6 @@ def run_analysis():
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
     PATH_TO_TEST_IMAGES_DIR = 'detect-objects/object_detection/test_images'
     TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
-
-#testing for pulling in images from the S3 put event
-# Get the uploaded file's information
-#testerbucket = event['Records'][0]['s3']['bucket']['name'] # Will be `my-bucket`
-#testerkey = event['Records'][0]['s3']['object']['key'] # Will be the file path of whatever file was uploaded.
-#print(testerbucket)
-#print(testerkey)
-
-# Get the bytes from S3
-#s3_client.download_file(testerbucket, testerkey, '/tmp/' + testerkey) # Download this file to writable tmp space.
-#file_bytes = open('/tmp/' + key).read()
 
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
