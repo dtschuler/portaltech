@@ -103,7 +103,7 @@ def get_frozen_graph():
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
     return detection_graph, category_index
 
-def run_analysis():
+def run_detection():
         # This is needed since the notebook is stored in the object_detection folder.
     sys.path.append("..")
     from object_detection.utils import ops as utils_ops
@@ -144,10 +144,7 @@ def run_analysis():
             line_thickness=8)
         plt.figure(figsize=IMAGE_SIZE)
         plt.imshow(image_np)
-        plt.savefig('/tmp/tested_image.png')
-
+        fig_path = '/tmp/tested_image.png'
+        plt.savefig(fig_path)
+    return fig_path
     print('Hello World')
-
-
-if __name__ == '__main__':
-    run_analysis()
