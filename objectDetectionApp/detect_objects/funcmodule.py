@@ -127,8 +127,8 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
     IMAGE_SIZE = (12, 8)
     image_np = img.copy()
 
-# Expand dimensions since the model expects images to have shape: [1, None, None, 3]
-    image_np_expanded = np.expand_dims(image_np, axis=0)
+# Expand dimensions since the model expects images to have shape: [1, None, None, 3] unused?
+    #image_np_expanded = np.expand_dims(image_np, axis=0) 
 # Actual detection.
     output_dict = run_inference_for_single_image(image_np, detection_graph)
 # Visualization of the results of a detection.
