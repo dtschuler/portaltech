@@ -107,8 +107,6 @@ def get_frozen_graph():
     return detection_graph, category_index
 
 def run_detection(PATH_TO_TEST_IMAGES_DIR):
-        # This is needed since the notebook is stored in the object_detection folder.
-    sys.path.append("..")
     from object_detection.utils import ops as utils_ops
 
     if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
@@ -147,7 +145,6 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
     
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
-    #image = Image.open(image_path)
     image_np = img.copy()
 # the array based representation of the image will be used later in order to prepare the
 # result image with boxes and labels on it.
