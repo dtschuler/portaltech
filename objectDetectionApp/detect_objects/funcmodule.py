@@ -118,22 +118,18 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
     KEY = PATH_TO_TEST_IMAGES_DIR # replace with your object key
     local_image_dir = os.path.join('/tmp',PATH_TO_TEST_IMAGES_DIR)
 
-   # if not os.path.exists(local_image_dir):   # this needs some variables
-   #     os.makedirs(local_image_dir)
-   # local_image_path = os.path.join(local_image_dir, 'image1.jpg')
-   # print(local_image_path)
+#bring image directly into memory
+# the array based representation of the image will be used later in order to prepare the
+# result image with boxes and labels on it.
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(BUCKET_NAME)
     image = bucket.Object(PATH_TO_TEST_IMAGES_DIR)
-
     img = mpimg.imread(BytesIO(image.get()['Body'].read()), 'jpg')
     
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
     image_np = img.copy()
-# the array based representation of the image will be used later in order to prepare the
-# result image with boxes and labels on it.
-    #image_np = load_image_into_numpy_array(image)
+
 # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
     image_np_expanded = np.expand_dims(image_np, axis=0)
 # Actual detection.
