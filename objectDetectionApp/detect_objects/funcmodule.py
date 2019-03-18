@@ -114,13 +114,10 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
 
     detection_graph, category_index = get_frozen_graph()
 
-    BUCKET_NAME = 'trialbucketportaltech' # replace with your bucket name
-    KEY = PATH_TO_TEST_IMAGES_DIR # replace with your object key
-    local_image_dir = os.path.join('/tmp',PATH_TO_TEST_IMAGES_DIR)
-
 #bring image directly into memory
 # the array based representation of the image will be used later in order to prepare the
 # result image with boxes and labels on it.
+    BUCKET_NAME = 'trialbucketportaltech' # replace with your bucket name
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(BUCKET_NAME)
     image = bucket.Object(PATH_TO_TEST_IMAGES_DIR)
