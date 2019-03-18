@@ -146,4 +146,3 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
     fig_path = '/tmp/tested_image.jpg' # should make a dir in S3 with timestamp for each image
     plt.savefig(fig_path)
     return fig_path
-    print('Hello World')
