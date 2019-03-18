@@ -127,21 +127,6 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
     image = bucket.Object(PATH_TO_TEST_IMAGES_DIR)
 
     img = mpimg.imread(BytesIO(image.get()['Body'].read()), 'jpg')
-    #image.download_fileobj(file_stream)
-    #img = mpimg.imread(file_stream)
-   # print(local_image_path)
-    #try:
-    #    s3.Bucket(BUCKET_NAME).download_file(PATH_TO_TEST_IMAGES_DIR, local_image_path)
-    #except botocore.exceptions.ClientError as e:
-    #    if e.response['Error']['Code'] == "404":
-    #        print("The object does not exist.")
-    #    else:
-    #        raise
-# For the sake of simplicity we will use only 2 images:
-# image1.jpg
-# image2.jpg
-# If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-    #TEST_IMAGE_PATHS = [ os.path.join(local_image_dir, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
     
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
