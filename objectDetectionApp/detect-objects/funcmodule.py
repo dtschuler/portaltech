@@ -148,7 +148,7 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
     #image = Image.open(image_path)
-    image_np = img
+    image_np = img.copy()
 # the array based representation of the image will be used later in order to prepare the
 # result image with boxes and labels on it.
     #image_np = load_image_into_numpy_array(image)
@@ -168,7 +168,7 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
         line_thickness=8)
     plt.figure(figsize=IMAGE_SIZE)
     plt.imshow(image_np)
-    fig_path = '/tmp/tested_image.jpg' # should make a dir with timestamp for each image
+    fig_path = '/tmp/tested_image.jpg' # should make a dir in S3 with timestamp for each image
     plt.savefig(fig_path)
     return fig_path
     print('Hello World')
