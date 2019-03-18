@@ -10,7 +10,7 @@ api = Api(app)
 
 class detection(Resource):
     def get(self):
-        test_image_path = 'test-images/'
+        test_image_path = 'test-images/image1.jpg'
         fig_path = run_detection(test_image_path)
         print(fig_path)
 
