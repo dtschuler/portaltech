@@ -5,6 +5,8 @@ import sys
 import tarfile
 import tensorflow as tf
 import zipfile
+import boto3
+import botocore
 
 from distutils.version import StrictVersion
 from collections import defaultdict
@@ -113,16 +115,34 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
 
     detection_graph, category_index = get_frozen_graph()
 
+    BUCKET_NAME = 'trialbucketportaltech' # replace with your bucket name
+    KEY = PATH_TO_TEST_IMAGES_DIR # replace with your object key
+    local_image_dir = os.path.join('/tmp',PATH_TO_TEST_IMAGES_DIR)
+
+    if not os.path.exists(local_image_dir):   # this needs some variables
+        os.makedirs(local_image_dir)
+    local_image_path = os.path.join(local_image_dir, 'image1.jpg')
+    print(local_image_path)
+    s3 = boto3.resource('s3')
+    print(local_image_path)
+    try:
+        s3.Bucket(BUCKET_NAME).download_file(PATH_TO_TEST_IMAGES_DIR, local_image_path)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
 # For the sake of simplicity we will use only 2 images:
 # image1.jpg
 # image2.jpg
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-    TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
-
+    TEST_IMAGE_PATHS = [ os.path.join(local_image_dir, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
+    
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
 
     for image_path in TEST_IMAGE_PATHS:
+        print(image_path)
         image = Image.open(image_path)
   # the array based representation of the image will be used later in order to prepare the
   # result image with boxes and labels on it.
@@ -143,7 +163,7 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
             line_thickness=8)
         plt.figure(figsize=IMAGE_SIZE)
         plt.imshow(image_np)
-        fig_path = '/tmp/tested_image.png'
+        fig_path = '/tmp/tested_image.jpg' # should make a dir with timestamp for each image
         plt.savefig(fig_path)
     return fig_path
     print('Hello World')
