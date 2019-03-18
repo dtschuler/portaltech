@@ -103,7 +103,7 @@ def get_frozen_graph():
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
     return detection_graph, category_index
 
-def run_detection():
+def run_detection(PATH_TO_TEST_IMAGES_DIR):
         # This is needed since the notebook is stored in the object_detection folder.
     sys.path.append("..")
     from object_detection.utils import ops as utils_ops
@@ -117,7 +117,6 @@ def run_detection():
 # image1.jpg
 # image2.jpg
 # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-    PATH_TO_TEST_IMAGES_DIR = 'detect-objects/object_detection/test_images'
     TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
 
 # Size, in inches, of the output images.
