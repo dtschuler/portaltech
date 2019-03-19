@@ -5,5 +5,9 @@ matplotlib
 Pillow
 flask
 flask_restful
+flask_jsonpify
 sqlalchemy
+boto3
+botocore
+
 
