@@ -8,13 +8,10 @@ from funcmodule import run_detection
 app = Flask(__name__)
 api = Api(app)
 
-class detection(Resource):
-    def get(self):
-        test_image_path = 'test-images/image1.jpg'
-        fig_path = run_detection(test_image_path)
-        print(fig_path)
-
-api.add_resource(detection, '/detection') # Route_1
+@app.route('/detection/<path:s3_path>')
+def detection(s3_path):
+    tested_image_path = run_detection(s3_path)
+    return(tested_image_path)
 
 if __name__ == '__main__':
      app.run(port='5002')
