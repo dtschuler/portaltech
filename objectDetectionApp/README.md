@@ -1,0 +1,1 @@
+To get this running, just look up how to set up a ~/.aws/credential file. For now this will be a step on any EC2 server we set up until I figure out how to set up a container swarm whatever that is.
