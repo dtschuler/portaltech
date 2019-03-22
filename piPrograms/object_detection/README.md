@@ -1,0 +1,1 @@
+This is where the app that takes the picture, uploads to s3, and uses our core API will live. 
