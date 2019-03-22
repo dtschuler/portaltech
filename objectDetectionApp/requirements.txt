@@ -9,5 +9,5 @@ flask_jsonpify
 sqlalchemy
 boto3
 botocore
-
+awscli
 

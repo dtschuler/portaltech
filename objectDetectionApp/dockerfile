@@ -16,6 +16,8 @@ EXPOSE 5000
 # Define environment variable
 ENV NAME World
 ENV PYTHONPATH detect_objects
+ENV VAR AWS_ACCESS_KEY_ID
+ENV VAR AWS_SECRET_ACCESS_KEY
 
 # Run app.py when the container launches
 CMD ["python3", "detect_objects/"]
