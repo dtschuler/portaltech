@@ -106,7 +106,7 @@ def get_frozen_graph():
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
     return detection_graph, category_index
 
-def run_detection(PATH_TO_TEST_IMAGES_DIR):
+def run_detection(PATH_TO_TEST_IMAGE):
     from object_detection.utils import ops as utils_ops
 
     if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
@@ -120,8 +120,9 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
     BUCKET_NAME = 'trialbucketportaltech' # replace with your bucket name
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(BUCKET_NAME)
-    image = bucket.Object(PATH_TO_TEST_IMAGES_DIR)
-    img = mpimg.imread(BytesIO(image.get()['Body'].read()), 'jpg')
+    image = bucket.Object(PATH_TO_TEST_IMAGE)
+    img = mpimg.imread(BytesIO(image.get()['Body'].read()), 'jpeg')
+    s3_dir = os.path.dirname(PATH_TO_TEST_IMAGE)
     
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
@@ -143,6 +144,8 @@ def run_detection(PATH_TO_TEST_IMAGES_DIR):
         line_thickness=8)
     plt.figure(figsize=IMAGE_SIZE)
     plt.imshow(image_np)
-    fig_path = '/tmp/tested_image.jpg' # should make a dir in S3 with timestamp for each image
+    fig_path = '/tmp/tested_image.jpeg' # should make a dir in S3 with timestamp for each image
     plt.savefig(fig_path)
-    return fig_path
+    s3_tested_path = s3_dir+'/tested_image.jpeg'
+    s3.meta.client.upload_file(fig_path,BUCKET_NAME,s3_tested_path)
+    return s3_tested_path
