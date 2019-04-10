@@ -106,6 +106,17 @@ def get_frozen_graph():
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
     return detection_graph, category_index
 
+def make_inventory(output_dict, category_index):
+    inventory_ix = []
+    inventory_list = []
+    for ix,confidence in enumerate(output_dict['detection_scores']):
+        if confidence>=.7:
+            inventory_ix.append(ix)
+    detected_classes = output_dict['detection_classes'][inventory_ix]
+    for detection_class in detected_classes:
+        inventory_list.append(category_index[detection_class]['name'])
+    return inventory_list
+
 def run_detection(PATH_TO_TEST_IMAGE):
     from object_detection.utils import ops as utils_ops
 
@@ -149,3 +160,5 @@ def run_detection(PATH_TO_TEST_IMAGE):
     s3_tested_path = s3_dir+'/tested_image.jpeg'
     s3.meta.client.upload_file(fig_path,BUCKET_NAME,s3_tested_path)
     return s3_tested_path
+
+def portal_transaction(test_images_s3_dir)
