@@ -117,6 +117,10 @@ def make_inventory(output_dict, category_index):
         inventory_list.append(category_index[detection_class]['name'])
     return inventory_list
 
+def compare_lists(opened_list, closed_list):
+        transaction_contents = list(set(opened_list)-set(closed_list))
+        return transaction_contents
+
 def run_detection(PATH_TO_TEST_IMAGE):
     from object_detection.utils import ops as utils_ops
 
@@ -159,6 +163,16 @@ def run_detection(PATH_TO_TEST_IMAGE):
     plt.savefig(fig_path)
     s3_tested_path = s3_dir+'/tested_image.jpeg'
     s3.meta.client.upload_file(fig_path,BUCKET_NAME,s3_tested_path)
-    return s3_tested_path
+    inventory_list = make_inventory(output_dict,category_index)
+    return s3_tested_path, inventory_list
 
-def portal_transaction(test_images_s3_dir)
+def portal_transaction(test_images_s3_dir):
+    open_image_path = os.path.join(test_images_s3_dir,'open.jpg')
+    close_image_path = os.path.join(test_images_s3_dir,'close.jpg')
+    # run detection on opened
+    open_tested_path, open_inventory = run_detection(open_image_path)
+    # run detection on closed
+    closed_tested_path, closed_inventory = run_detection(close_image_path)
+    # compare inventory lists, output transaction list
+    transaction_contents = compare_lists(open_inventory,closed_inventory)
+    return 
