@@ -110,7 +110,7 @@ def make_inventory(output_dict, category_index):
     inventory_ix = []
     inventory_list = []
     for ix,confidence in enumerate(output_dict['detection_scores']):
-        if confidence>=.7:
+        if confidence>=.5:
             inventory_ix.append(ix)
     detected_classes = output_dict['detection_classes'][inventory_ix]
     for detection_class in detected_classes:
@@ -121,9 +121,8 @@ def compare_lists(opened_list, closed_list):
         transaction_contents = list(set(opened_list)-set(closed_list))
         return transaction_contents
 
-def run_detection(PATH_TO_TEST_IMAGE):
+def run_detection_demo(PATH_TO_TEST_IMAGE):
     from object_detection.utils import ops as utils_ops
-
     if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
         raise ImportError('Please upgrade your TensorFlow installation to v1.9.* or later!')
 
@@ -136,8 +135,7 @@ def run_detection(PATH_TO_TEST_IMAGE):
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(BUCKET_NAME)
     image = bucket.Object(PATH_TO_TEST_IMAGE)
-    img = mpimg.imread(BytesIO(image.get()['Body'].read()), 'jpeg')
-    s3_dir = os.path.dirname(PATH_TO_TEST_IMAGE)
+    img = mpimg.imread(BytesIO(image.get()['Body'].read()), '.jpg')
     
 # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
@@ -161,18 +159,24 @@ def run_detection(PATH_TO_TEST_IMAGE):
     plt.imshow(image_np)
     fig_path = '/tmp/tested_image.jpeg' # should make a dir in S3 with timestamp for each image
     plt.savefig(fig_path)
-    s3_tested_path = s3_dir+'/tested_image.jpeg'
+    s3_tested_path = PATH_TO_TEST_IMAGE.replace('.jpg','_tested.jpg')
     s3.meta.client.upload_file(fig_path,BUCKET_NAME,s3_tested_path)
     inventory_list = make_inventory(output_dict,category_index)
     return s3_tested_path, inventory_list
 
-def portal_transaction(test_images_s3_dir):
+def demo_portal_transaction(test_images_s3_dir):
+    """Need two images in s3 dir, one named open.jpg and one named close.jpg"""
     open_image_path = os.path.join(test_images_s3_dir,'open.jpg')
     close_image_path = os.path.join(test_images_s3_dir,'close.jpg')
     # run detection on opened
-    open_tested_path, open_inventory = run_detection(open_image_path)
+    open_tested_path, open_inventory_list = run_detection_demo(open_image_path)
     # run detection on closed
-    closed_tested_path, closed_inventory = run_detection(close_image_path)
+    close_tested_path, closed_inventory_list = run_detection_demo(close_image_path)
     # compare inventory lists, output transaction list
-    transaction_contents = compare_lists(open_inventory,closed_inventory)
-    return 
+    transaction_contents = compare_lists(open_inventory_list,closed_inventory_list)
+    #make dict with all info
+    transaction_dict = {'open_tested_path':open_tested_path,
+                        'close_tested_path':close_tested_path,
+                        'transaction_contents':transaction_contents}
+    return transaction_dict
+
