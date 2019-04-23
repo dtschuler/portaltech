@@ -15,14 +15,16 @@ GPIO.setmode(GPIO.BCM)
 
 # Create a dictionary called pins to store the pin number, name, and pin state:
 pins = {
-   14 : {'name' : 'GPIO 14', 'state' : GPIO.LOW},
-   15 : {'name' : 'GPIO 15', 'state' : GPIO.LOW}
+   14 : {'name' : 'GPIO 14 - Lock', 'state' : GPIO.LOW},
+   15 : {'name' : 'GPIO 15 - Door', 'state' : GPIO.LOW},
+
    }
 
-# Set each pin as an output and make it low:
+
 for pin in pins:
    GPIO.setup(pin, GPIO.OUT)
    GPIO.output(pin, GPIO.LOW)
+  
 
 @app.route("/")
 def main():
@@ -33,6 +35,8 @@ def main():
    templateData = {
       'pins' : pins
       }
+
+   
    # Pass the template data into the template main.html and return it to the user
    return render_template('main.html', **templateData)
 
@@ -65,4 +69,4 @@ def action(changePin, action):
    return render_template('main.html', **templateData)
 
 if __name__ == "__main__":
-   app.run(host='0.0.0.0', port=80, debug=True)
+   app.run(host='0.0.0.0', port=50, debug=True)
