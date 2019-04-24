@@ -76,7 +76,7 @@ def run_inference_for_single_image(image, graph):
 
 def get_frozen_graph():
     # What model to download.
-    MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
+    MODEL_NAME = 'faster_rcnn_nas_coco_2018_01_28'
     MODEL_FILE = MODEL_NAME + '.tar.gz'
     DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
 
