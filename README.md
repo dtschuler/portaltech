@@ -1,2 +1,2 @@
 # portaltech
-All portaltech code and shit
+All portaltech code
